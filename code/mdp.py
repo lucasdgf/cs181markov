@@ -36,7 +36,44 @@ def get_target(score):
 def T(a, s, s_prime):
   # takes an action a, current state s, and next state s_prime
   # returns the probability of transitioning to s_prime when taking action a in state s
-  return 0
+  
+  probability = 0.0
+
+  # -2 -1 0 1 2
+  for w in range(-2, 3):
+    # hit the wedge (0)
+    if abs(w) == 0:
+      p_wedge = 0.4
+    # hit region outside the wedge (-1 or 1)
+    elif abs(w) == 1:
+      p_wedge = 0.2
+    # hit region outside of that (-2 or 2)
+    else:
+      p_wedge = 0.1
+
+    # get the wedge and do % to loop around in case of going around circle
+    wedge = (a.wedge + w) % throw.NUM_WEDGES
+
+    # same thing, but now for the ring
+    for r in range(-2, 3):
+      # hit the ring
+      if abs(r) == 0:
+        p_ring = 0.4
+      # hit region outside the ring
+      elif abs(r) == 1:
+        p_ring = 0.2
+      # hit region outside of that
+      else:
+        p_ring = 0.1
+
+      # get the ring and do % to loop around in case of going around circle
+      ring = abs(a.ring + r)
+
+      score = throw.location_to_score(throw.location(ring, wedge))
+      if score == s - s_prime:
+        probability += p_wedge * p_ring
+
+  return probability
 
 
 def infiniteValueIteration(gamma):
