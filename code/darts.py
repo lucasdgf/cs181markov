@@ -10,7 +10,7 @@ import mdp
 import modelbased
 import modelfree
 
-GAMMA = .5
+GAMMA = 0.8
 EPOCH_SIZE = 10
 
 # list of all possible states.
@@ -99,7 +99,7 @@ def main():
 
 # Default is to solve MDP and play 1 game
     throw.use_simple_thrower()
-    test(100, "mdp")    
+    test(1, "mdp")    
 
 #*************************************************#
 # Uncomment the lines below to run the modelbased #
