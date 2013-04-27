@@ -36,10 +36,7 @@ def get_actions():
 def R(s, a):
   # takes a state s and action a
   # returns the reward for completing action a in state s
-  if s == a:
-    return 1
-  else:
-    return 0
+  return 1 if (s == 0) else 0
 
 # Play a single game 
 def play(method):
