@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{enumerate}
+
+\title{CS181 Assignment 5---Markov Decision Processes and Reinforcement Learning}
+\author{Lucas Freitas and Angela Li}
+
+\begin{document}
+\maketitle
+    
+    \begin{enumerate}
+        \item
+            \begin{enumerate}[(a)]
+                \item % TODO: 1a 
+                \item The utility function works well for paring down the score in as few dart throws as possible, but only until it reaches the point where it is possible to win in one throw. At that point, it makes decisions poorly in that it values a non-winning throw as nearly as good as a winning throw. \\
+
+                For example, if the current score was 20, a throw resulting in a 20-point gain would end the game (and thus should be valued extremely highly). However, a throw resulting in a 19-point gain (which requires, at the very least, one more throw to win the game) would be valued at only 5\% less utility than a winning throw. So the proposed utility function is not conducive to good decision-making in states where it is possible to win in one move---in those cases, the winning move should be valued significantly more highly.
+            \end{enumerate}
+        \item
+            \begin{enumerate}[(a)]
+                \item In our MDP model, the states are the possible scores in the game (so every integer in the range [0, \texttt{START\_SCORE}] is a state), and the actions are the possible areas (ring and wedge) that the dart player can aim for in any given turn.
+                \item % TODO: 2b
+                \item % TODO: 2c
+                \item There is no guarantee that the darts game can be won in a certain number of steps, so it doesn't make sense to impose an arbitrary finite horizon on the game---after all, the optimal policy should place primary importance on being able to get to a score of 0, and secondary importance on accomplishing that score in as few steps as possible.
+                \item % TODO: 2e
+                \item % TODO: 2f
+            \end{enumerate}        
+        \item
+            \begin{enumerate}[(a)]
+                \item % TODO: 3a
+                \item % TODO: 3b
+                \item % TODO: 3c
+            \end{enumerate}        
+        \item
+            \begin{enumerate}[(a)]
+                \item % TODO: 4a
+                \item % TODO: 4b
+                \item % TODO: 4c
+            \end{enumerate}                
+    \end{enumerate}
+
+\end{document}
