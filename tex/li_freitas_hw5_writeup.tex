@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{fullpage}
 \usepackage{enumerate}
+\usepackage{amsmath}
 
 \title{CS181 Assignment 5---Markov Decision Processes and Reinforcement Learning}
 \author{Lucas Freitas and Angela Li}
@@ -11,8 +12,17 @@
     \begin{enumerate}
         \item
             \begin{enumerate}[(a)]
-                \item % TODO: 1a 
-                \item The utility function works well for paring down the score in as few dart throws as possible, but only until it reaches the point where it is possible to win in one throw. At that point, it makes decisions poorly in that it values a non-winning throw as nearly as good as a winning throw. \\
+                \item We have a probability distribution $P(\text{points } | \text{ target})$ and a utility function $U(\text{points, score})$. The expected utility of aiming for a target $t$ is:
+
+                $$\sum_{k \in K} P(\text{k} | \text{t}) \; U(\text{k, S})$$
+
+                Where $K$ is the set of possible points scored after one throw, and $S$ is the current score. To determine the optimal action, we use the maximum expected utility principle:
+
+                $$\underset{t \in T}{\operatorname{argmax}} \sum_{k \in K} P(\text{k} | \text{t}) \; U(\text{k, S})$$
+
+                Where T is the set of possible targets we can aim for.
+
+                \item This utility function works well for paring down the score in as few dart throws as possible, but only until it reaches the point where it is possible to win in one throw. At that point, it makes decisions poorly in that it values a non-winning throw as nearly as good as a winning throw. \\
 
                 For example, if the current score was 20, a throw resulting in a 20-point gain would end the game (and thus should be valued extremely highly). However, a throw resulting in a 19-point gain (which requires, at the very least, one more throw to win the game) would be valued at only 5\% less utility than a winning throw. So the proposed utility function is not conducive to good decision-making in states where it is possible to win in one move---in those cases, the winning move should be valued significantly more highly.
             \end{enumerate}
