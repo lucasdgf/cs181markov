@@ -22,16 +22,18 @@
 
                 Where T is the set of possible targets we can aim for.
 
-                \item This utility function works well for paring down the score in as few dart throws as possible, but only until it reaches the point where it is possible to win in one throw. At that point, it makes decisions poorly in that it values a non-winning throw as nearly as good as a winning throw. \\
+                \item This utility function works fairly well for paring down the score in a relatively small number of dart throws*, but only until it reaches the point where it is possible to win in one throw. At that point, it makes decisions poorly in that it values a non-winning throw as nearly as good as a winning throw. \\
 
-                For example, if the current score was 20, a throw resulting in a 20-point gain would end the game (and thus should be valued extremely highly). However, a throw resulting in a 19-point gain (which requires, at the very least, one more throw to win the game) would be valued at only 5\% less utility than a winning throw. So the proposed utility function is not conducive to good decision-making in states where it is possible to win in one move---in those cases, the winning move should be valued significantly more highly.
+                For example, if the current score was 20, a throw resulting in a 20-point gain would end the game (and thus should be valued extremely highly). However, a throw resulting in a 19-point gain (which requires, at the very least, one more throw to win the game) would be valued at only 5\% less utility than a winning throw. So the proposed utility function is not conducive to good decision-making in states where it is possible to win in one move---in those cases, the winning move should be valued significantly more highly. \\
+
+                *Even a quick paring-down of the score, however, is not always desirable. Consider that there are probably significantly many more ways to score 10 points in a throw than there are ways to score 1 point in a throw. However, if the current score was 20, the utility function would reward a score of 19 higher than a score of 10, even though both point values require at the very least one more dart throw to win; a throw of 10 shoul, however, be rewarded more because it creates more opportunity for a winning throw (of 10 points) than a throw of 19 (which requires a winning throw of 1 point).
             \end{enumerate}
         \item
             \begin{enumerate}[(a)]
                 \item In our MDP model, the states are the possible scores in the game (so every integer in the range [0, \texttt{START\_SCORE}] is a state), and the actions are the possible areas (ring and wedge) that the dart player can aim for in any given turn. \\
 
                 Therefore \texttt{get\_states()} should return \texttt{range(throw.START\_SCORE + 1)}.
-                \item % TODO: 2b
+                \item 
                 \item % TODO: 2c
                 \item There is no guarantee that the darts game can be won in a certain number of steps, so it doesn't make sense to impose an arbitrary finite horizon on the game---after all, the optimal policy should place primary importance on being able to get to a score of 0, and secondary importance on accomplishing that score in as few steps as possible.
                 \item % TODO: 2e
