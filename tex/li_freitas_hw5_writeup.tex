@@ -28,7 +28,9 @@
             \end{enumerate}
         \item
             \begin{enumerate}[(a)]
-                \item In our MDP model, the states are the possible scores in the game (so every integer in the range [0, \texttt{START\_SCORE}] is a state), and the actions are the possible areas (ring and wedge) that the dart player can aim for in any given turn.
+                \item In our MDP model, the states are the possible scores in the game (so every integer in the range [0, \texttt{START\_SCORE}] is a state), and the actions are the possible areas (ring and wedge) that the dart player can aim for in any given turn. \\
+
+                Therefore \texttt{get\_states()} should return \texttt{range(throw.START\_SCORE + 1)}.
                 \item % TODO: 2b
                 \item % TODO: 2c
                 \item There is no guarantee that the darts game can be won in a certain number of steps, so it doesn't make sense to impose an arbitrary finite horizon on the game---after all, the optimal policy should place primary importance on being able to get to a score of 0, and secondary importance on accomplishing that score in as few steps as possible.
