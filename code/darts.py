@@ -13,11 +13,8 @@ import modelfree
 GAMMA = .5
 EPOCH_SIZE = 10
 
-
-# <CODE HERE>: Complete this function, which should return a
 # list of all possible states.
 def get_states():
-  # should return a **list** of states. Each state should be an integer.
   return range(throw.START_SCORE + 1)
 
 # Returns a list of all possible actions, or targets, which include both a
@@ -36,7 +33,6 @@ def get_actions():
     
   return actions
 
-# <CODE HERE>: Define the reward function
 def R(s, a):
   # takes a state s and action a
   # returns the reward for completing action a in state s
@@ -103,8 +99,8 @@ def main():
 #*************************************************
 
 # Default is to solve MDP and play 1 game
-    #throw.use_simple_thrower()
-    #test(1, "mdp")    
+    throw.use_simple_thrower()
+    test(100, "mdp")    
 
 #*************************************************#
 # Uncomment the lines below to run the modelbased #
