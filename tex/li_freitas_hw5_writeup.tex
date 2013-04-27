@@ -33,17 +33,34 @@
                 \item In our MDP model, the states are the possible scores in the game (so every integer in the range [0, \texttt{START\_SCORE}] is a state), and the actions are the possible areas (ring and wedge) that the dart player can aim for in any given turn. \\
 
                 Therefore \texttt{get\_states()} should return \texttt{range(throw.START\_SCORE + 1)}.
-
                 \item The reward function should not depend on the action $a$ - it should only take into account if the user has won ($s==0$) or not yet.  Thus, we can write the function as \texttt{return 1 if s == 0 else 0}. The problem about this reward function is that it doesn't show our preference of winning earlier than late.\\
                 
-                That is why the discount factor is important - we should use it to show that bias for earlier wins. If the discount factor was $1$, then we would still not be able to add that preference (we would still not care if we won early or late), and if the discount factor was $0$, that would mean that we don't care about winning later at all, which is not good, since we will definitely need future actions in order to win eventually. Thus, we should have a discount factor between $0$ and $1$, closer to $0$ in order to show the preference for winning early.
-
-                \item % TODO: 2c
+               That is why the discount factor is important - we should use it to show that bias for earlier wins. If the discount factor was $1$, then we would still not be able to add that preference (we would still not care if we won early or late), and if the discount factor was $0$, that would mean that we don't care about winning later at all, which is not good, since we will definitely need future actions in order to win eventually. Thus, we should have a discount factor between $0$ and $1$, closer to $0$ in order to show the preference for winning early.
+                 \item Implementation included in appendix.
                 
                 \item There is no guarantee that the darts game can be won in a certain number of steps, so it doesn't make sense to impose an arbitrary finite horizon on the game---after all, the optimal policy should place primary importance on being able to get to a score of 0, and secondary importance on accomplishing that score in as few steps as possible.
+                \item Running experiments for the small game, it seems that the optimal policy resulting from value iteration focuses on trying to hit an area that is going to make the user win with that throw. For instance, the program always starts aiming at edge $3$, ring $3$ at first, which would give a score of $9$ and an instantaneous win. The same happens for scores in the range $[1,6]$ - for a given score $k$ in that range, the program aims at an area that gives a score of $k$. For $7$ and $8$, on the other hand, the program aims at $2$ and $3$ respectively, which makes sense, since hitting an area and getting exactly $7$ or $8$ is not very likely (actually not even possible for $7$). Thus, the program first reduces the score and then tries to win in the next hit.
                 
-                \item % TODO: 2e
-                \item % TODO: 2f
+                \item The table below shows the program policy for values of $\gamma$ from $0$ to $1$. Each row $k$ for a given $\gamma$ has the value of the area that is aimed at when the score in the game is $k$ and the discount factor is $\gamma$.
+                
+\begin{center} \begin{tabular}[h]{|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+$\gamma/k$ & $0.0$ & $0.1$ & $0.2$ & $0.3$ & $0.4$ & $0.5$ & $0.6$ & $0.7$ & $0.8$ & $0.9$ & $1.0$ \\ \hline
+$1$ & 6 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+$2$ & 6 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 \\
+$3$ & 6 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 \\
+$4$ & 6 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 \\
+$5$ & 6 & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5 \\
+$6$ & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 \\
+$7$ & 6 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 1 & 1 \\
+$8$ & 6 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 1 & 1 \\
+$9$ & 6 & 9 & 9 & 9 & 9 & 9 & 9 & 9 & 9 & 9 & 9 \\ \hline
+\end{tabular} \end{center}
+
+From the table, we can firstly see that for $\gamma=0$ the are that is aimed at is always the same (area that gives score of $6$). That is not surprising, since a discount factor of zero would mean that we are not looking into the implications of our actions at all, so it doesn't matter what score we currently have, our strategy will always be there same.\\
+
+Secondly, we can see that the strategy for $k=1$ to $6$ or $k=9$ and $\gamma>0$ is to always aim at an area that gives the same score as $k$. The actual wedge and ring targeted actually changes for some $\gamma$ (for $2$, for instance, it changes from wedge $2$, ring $4$ to wedge $1$, ring $5$ for $\gamma\ge0.9$).\\
+
+Finally, we see that for $\gamma=0.9$ or $\gamma=1.0$, we do have a change in strategy,  aiming to $1$ instead of $2$ or $3$. That indicates that since $\gamma$ is getting higher, we care less and less about how long the game lasts, and the program is just aiming on finishing the game instead of finishing it fast.
             \end{enumerate}        
         \item
             \begin{enumerate}[(a)]
@@ -64,5 +81,49 @@
                 \item % TODO: 4c
             \end{enumerate}                
     \end{enumerate}
+\section*{Appendix}
+\subsection*{Code for 2.c}
+\begin{verbatim}
+def T(a, s, s_prime):
+  # takes an action a, current state s, and next state s_prime
+  # returns the probability of transitioning to s_prime when taking action a in state s
+  
+  probability = 0.0
 
+  # -2 -1 0 1 2
+  for w in range(-2, 3):
+    # hit the wedge (0)
+    if abs(w) == 0:
+      p_wedge = 0.4
+    # hit region outside the wedge (-1 or 1)
+    elif abs(w) == 1:
+      p_wedge = 0.2
+    # hit region outside of that (-2 or 2)
+    else:
+      p_wedge = 0.1
+
+    # get the wedge and do % to loop around in case of going around circle
+    wedge = (a.wedge + w) % throw.NUM_WEDGES
+
+    # same thing, but now for the ring
+    for r in range(-2, 3):
+      # hit the ring
+      if abs(r) == 0:
+        p_ring = 0.4
+      # hit region outside the ring
+      elif abs(r) == 1:
+        p_ring = 0.2
+      # hit region outside of that
+      else:
+        p_ring = 0.1
+
+      # get the ring and do % to loop around in case of going around circle
+      ring = abs(a.ring + r)
+
+      score = throw.location_to_score(throw.location(ring, wedge))
+      if score == s - s_prime:
+        probability += p_wedge * p_ring
+
+  return probability
+\end{verbatim}
 \end{document}
