@@ -10,31 +10,26 @@ EPSILON_VI = .001
 # ex_strategy_one and ex_strategy_two.
 
 def start_game():
-
-  return(throw.location(throw.INNER_RING, throw.NUM_WEDGES)) 
+  return (throw.location(throw.INNER_RING, throw.NUM_WEDGES)) 
 
 def get_target(score):
-
   if score <= throw.NUM_WEDGES: return throw.location(throw.SECOND_PATCH, score)
-  
-  return(throw.location(throw.INNER_RING, throw.NUM_WEDGES))
-
+  return (throw.location(throw.INNER_RING, throw.NUM_WEDGES))
 
 # Define your first exploration/exploitation strategy here. Return 0 to exploit and 1 to explore. 
 # You may want to pass arguments from the modelbased function. 
 def ex_strategy_one():
-  return 0
+  return random.choice([0, 1])
 
-# Define your first exploration/exploitation strategy here. Return 0 to exploit and 1 to explore. 
+# Define your second exploration/exploitation strategy here. Return 0 to exploit and 1 to explore. 
 # You may want to pass arguments from the modelbased function.
 def ex_strategy_two():
-  return 1
+  return random.choice([0, 1])
 
 # Implement a model-based reinforcement learning algorithm. 
 # Given num_games (the number of games to play), store the
 # learned transition probabilities in T.
 def modelbased(gamma, epoch_size, num_games):
-
     # store all actions (targets on dartboard) in actions array
     actions = darts.get_actions()
     states = darts.get_states()
@@ -45,8 +40,7 @@ def modelbased(gamma, epoch_size, num_games):
     num_transitions = {}
     T_matrix = {}
     num_iterations = 0
-    
-    
+
     # Initialize all arrays to 0 except the policy, which should be assigned a random action for each state.
     for s in states:
         pi_star[s] = random.randint(0, len(actions)-1)
@@ -64,14 +58,18 @@ def modelbased(gamma, epoch_size, num_games):
                 num_transitions[s][s_prime][a] = 0
                 T_matrix[s][s_prime][a] = 0
 
-
     # play num_games games, updating policy after every EPOCH_SIZE number of throws
     for g in range(1, num_games + 1):
     
     	# run a single game
         s = throw.START_SCORE
-        while s > 0:
+        turns = 0
+        while s >= 0:
+            if s == 0:
+              print turns
+              break
 
+            turns += 1
             num_iterations += 1
     		
             # The following two statements implement two exploration-exploitation
@@ -88,7 +86,6 @@ def modelbased(gamma, epoch_size, num_games):
             	# exploit
             	a = pi_star[s]
             	action = actions[a]
-    
             
             # Get result of throw from dart thrower; update score if necessary
             loc = throw.throw(action) 
@@ -172,5 +169,3 @@ def modelbased_value_iteration(gamma, T_matrix, pi_star):
       V[0][s] = V[1][s]
 
   return T_matrix, pi_star
-
-  
