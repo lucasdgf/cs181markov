@@ -81,7 +81,9 @@ def play(method):
 def test(n, method):
     score = 0
     for i in range(n):
-        score += play(method)
+        p = play(method)
+        print p
+        score += p
         
     print "Average turns = ", float(score)/float(n)
     return score
@@ -98,8 +100,8 @@ def main():
 #*************************************************
 
 # Default is to solve MDP and play 1 game
-    throw.use_simple_thrower()
-    test(100, "mdp")    
+    #throw.use_simple_thrower()
+    #test(100, "mdp")    
 
 #*************************************************#
 # Uncomment the lines below to run the modelbased #
@@ -112,9 +114,9 @@ def main():
 # multiple calls to main().
 # Then, initialize the throwing model and run
 # the modelbased algorithm.
-    #random.seed()
-    #throw.init_thrower()
-    #modelbased.modelbased(GAMMA, EPOCH_SIZE, num_games)
+    random.seed()
+    throw.init_thrower()
+    modelbased.modelbased(GAMMA, EPOCH_SIZE, num_games)
 
 #*************************************************#
 # Uncomment the lines below to run the modelfree  #

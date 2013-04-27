@@ -33,24 +33,29 @@
                 \item In our MDP model, the states are the possible scores in the game (so every integer in the range [0, \texttt{START\_SCORE}] is a state), and the actions are the possible areas (ring and wedge) that the dart player can aim for in any given turn. \\
 
                 Therefore \texttt{get\_states()} should return \texttt{range(throw.START\_SCORE + 1)}.
-<<<<<<< HEAD
+
                 \item The reward function should not depend on the action $a$ - it should only take into account if the user has won ($s==0$) or not yet.  Thus, we can write the function as \texttt{return 1 if s == 0 else 0}. The problem about this reward function is that it doesn't show our preference of winning earlier than late.\\
                 
-               That is why the discount factor is important - we should use it to show that bias for earlier wins. If the discount factor was $1$, then we would still not be able to add that preference (we would still not care if we won early or late), and if the discount factor was $0$, that would mean that we don't care about winning later at all, which is not good, since we will definitely need future actions in order to win eventually. Thus, we should have a discount factor between $0$ and $1$, closer to $0$ in order to show the preference for winning early.
-                               \item % TODO: 2c
-=======
-                \item 
+                That is why the discount factor is important - we should use it to show that bias for earlier wins. If the discount factor was $1$, then we would still not be able to add that preference (we would still not care if we won early or late), and if the discount factor was $0$, that would mean that we don't care about winning later at all, which is not good, since we will definitely need future actions in order to win eventually. Thus, we should have a discount factor between $0$ and $1$, closer to $0$ in order to show the preference for winning early.
+
                 \item % TODO: 2c
->>>>>>> 3460f1b8eb0bdcbc179a4de2f084bfcd3ac26ae9
+                
                 \item There is no guarantee that the darts game can be won in a certain number of steps, so it doesn't make sense to impose an arbitrary finite horizon on the game---after all, the optimal policy should place primary importance on being able to get to a score of 0, and secondary importance on accomplishing that score in as few steps as possible.
+                
                 \item % TODO: 2e
                 \item % TODO: 2f
             \end{enumerate}        
         \item
             \begin{enumerate}[(a)]
-                \item % TODO: 3a
-                \item % TODO: 3b
-                \item % TODO: 3c
+                \item We converge during policy iteration if $\pi_{i+1}(s) = \pi_{i}$ for every state $s$; that is, 
+
+                $$\forall s \; V^{\pi_k}(s) = \underset{a}{\operatorname{argmax}} \sum_{s'} P(s' | s, a) [R(s, a) + \gamma V_j^{\pi_k}(s')]$$
+
+                Since this satisfies the Bellman equation, we know that it is tha value of optimal stationary policy.
+                \item If $\pi^{(1)}$ is the policy before a policy iteration phase and $\pi^{(1)}$ is the policy after, then by definition: $$\pi^{(2)}(s) = \underset{a}{\operatorname{argmax}} \; Q^{\pi^{(1)}}(s, a)$$
+
+                
+                \item Since there are a finite number of states and actions, there are also only a finite number of stationary policies. With every step of policy iteration, we will produce either an unchanged policy or a policy that is a strict improvement over the previous. If the policy is unchanged, then we terminate---producing an optimal policy as proven in part (a). If the policy is a strict improvement, we continue; however, since there are only a finite number of policies, we must eventually reach the optimal one as less-optimal policies are disregarded.
             \end{enumerate}        
         \item
             \begin{enumerate}[(a)]
