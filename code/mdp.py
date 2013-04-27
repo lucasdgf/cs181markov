@@ -40,7 +40,7 @@ def T(a, s, s_prime):
 
 
 def infiniteValueIteration(gamma):
-  # takes a discount factor gamma and convergence cutoff epislon
+  # takes a discount factor gamma and convergence cutoff epsilon
   # returns
 
   V = {}
