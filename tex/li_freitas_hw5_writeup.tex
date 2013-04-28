@@ -2,6 +2,8 @@
 \usepackage{fullpage}
 \usepackage{enumerate}
 \usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{color, colortbl}
 
 \title{CS181 Assignment 5---Markov Decision Processes and Reinforcement Learning}
 \author{Lucas Freitas and Angela Li}
@@ -44,7 +46,8 @@
                 \item The table below shows the program policy for values of $\gamma$ from $0$ to $1$. Each row $k$ for a given $\gamma$ has the value of the area that is aimed at when the score in the game is $k$ and the discount factor is $\gamma$.
                 
 \begin{center} \begin{tabular}[h]{|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
-$\gamma/k$ & $0.0$ & $0.1$ & $0.2$ & $0.3$ & $0.4$ & $0.5$ & $0.6$ & $0.7$ & $0.8$ & $0.9$ & $1.0$ \\ \hline
+\rowcolor{black}
+\textcolor{white}{$\gamma/k$} & \textcolor{white}{$0.0$} & \textcolor{white}{$0.1$} &   \textcolor{white}{$0.2$} &  \textcolor{white}{$0.3$} &  \textcolor{white}{$0.4$} &  \textcolor{white}{$0.5$} &  \textcolor{white}{$0.6$} &  \textcolor{white}{$0.7$} &  \textcolor{white}{$0.8$} &  \textcolor{white}{$0.9$} &  \textcolor{white}{$1.0$}\\ \hline
 $1$ & 6 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
 $2$ & 6 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 \\
 $3$ & 6 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 \\
@@ -70,13 +73,33 @@ Finally, we see that for $\gamma=0.9$ or $\gamma=1.0$, we do have a change in st
 
                 Since this satisfies the Bellman equation, we know that it is tha value of optimal stationary policy.
                 \item If $\pi^{(1)}$ is the policy before a policy iteration phase and $\pi^{(1)}$ is the policy after, then by definition: $$\pi^{(2)}(s) = \underset{a}{\operatorname{argmax}} \; Q^{\pi^{(1)}}(s, a)$$
-
                 
+               From that, we can write that:
+               
+               $$Q^{\pi^{(1)}}(s, \pi^{(2)}(s))\geq V^{\pi^{(1)}}(s)$$
+ If we expand $Q$, however, we will get another expression with $V^{\pi}(s_{t+1})$, and if we keep going, we will get to a point in which we get $V^{\pi^{(2)}}(s)$, which proves that:
+ 
+ $$V^{\pi^{(e)}}(s) \geq V^{\pi^{(1)}}(s)$$  
                 \item Since there are a finite number of states and actions, there are also only a finite number of stationary policies. With every step of policy iteration, we will produce either an unchanged policy or a policy that is a strict improvement over the previous. If the policy is unchanged, then we terminate---producing an optimal policy as proven in part (a). If the policy is a strict improvement, we continue; however, since there are only a finite number of policies, we must eventually reach the optimal one as less-optimal policies are disregarded.
             \end{enumerate}        
         \item
             \begin{enumerate}[(a)]
-                \item % TODO: 4a
+                \item 
+                \begin{enumerate}[1.]
+                	\item
+			 For \texttt{ex\_strategy\_one}, we decided to use a very simple strategy: explore or exploit with $50\%$ probability each. That can we written simply as \texttt{return random.choice([0, 1])}. 
+		\item
+			 For \texttt{ex\_strategy\_two}, we decided to use the \texttt{num\_iterations} as an argument for the function, and to decrease the probability of exploration as \texttt{num\_iterations} increases. Our function was thus: \texttt{return random.random() < 1./(2 + 0.1 * num\_iterations)}\\
+		  \end{enumerate}	 
+			 Running the program for \texttt{EPOCH\_SIZE} from $10$ to $200$ and \texttt{num\_games=100}, for each of the two strategies, we get the performances shown in the graphs below:
+			 \begin{center}
+			 	\includegraphics[width=0.4\textwidth]{graph1} \includegraphics[width=0.4\textwidth]{graph2}
+			 \end{center}
+			 
+			 Looking at the graphs, the first conclusion we had was that strategy $1$ was definitely better for our program than strategy $2$, the latter actually being very unstable, having a very high variation of average number of tuns. The performance of strategy $1$ seems to be related to the epoch size, since the performance changes somewhat significantly, although not in a particular trend, as the epoch size increases. It is good to note that that change in performance might be related to the randomness of the game, but in case the relation indeed exists, it seems that the optimal performance would occur for epoch size around $120$.\\
+			 
+			 While the average number of turns for strategy $1$ seems to be around $25$ to $30$, strategy $2$ has average performances ranging from as low as $26.34$ to as high as $224.16$. It is good to note, however, that the games with ridiculously large number of turns are anomalities caused by the strategy function chosen. Since the exploration probability decreases as the number of iterations increases, we have cases of games that last a long, long time. As an example, for $120$ epochs, we had a game that lasted $3783$ turns, which is far from ideal. That indicates that the strategy is probably not the best to take, since it proves to be very unstable depending on randomness. Besides, the average number of turns over epochs is around $60$ to $70$ epochs, which is far worse than for the simple and faster strategy $1$.\\
+                
                 \item % TODO: 4b
                 \item % TODO: 4c
             \end{enumerate}                
