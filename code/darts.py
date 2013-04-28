@@ -10,7 +10,7 @@ import mdp
 import modelbased
 import modelfree
 
-GAMMA = 0.8
+GAMMA = 0.5
 EPOCH_SIZE = 10
 
 # list of all possible states.
@@ -91,7 +91,7 @@ def test(n, method):
 # <CODE HERE>: Feel free to modify the main function to set up your experiments.
 def main():
     throw.init_board()
-    num_games = 1000
+    num_games = 19
 
 #************************************************#
 # Uncomment the lines below to run the mdp code, #
@@ -100,8 +100,8 @@ def main():
 #*************************************************
 
 # Default is to solve MDP and play 1 game
-    throw.use_simple_thrower()
-    test(1, "mdp")    
+    #throw.use_simple_thrower()
+    #test(1, "mdp")    
 
 #*************************************************#
 # Uncomment the lines below to run the modelbased #
@@ -116,7 +116,9 @@ def main():
 # the modelbased algorithm.
     random.seed()
     throw.init_thrower()
-    modelbased.modelbased(GAMMA, EPOCH_SIZE, num_games)
+    for epoch in range (20):
+        print "Epoch size: " + str(200 - epoch * 10)
+        modelbased.modelbased(GAMMA, 200 - 10 * epoch, num_games)
 
 #*************************************************#
 # Uncomment the lines below to run the modelfree  #
