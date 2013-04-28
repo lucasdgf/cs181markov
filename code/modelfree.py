@@ -14,8 +14,8 @@ states = []
 actions = []
 Q = {}
 
-alpha = 0
-gamma = 0
+alpha = 0.5
+gamma = 0.5
 
 """def start_game():
   return (throw.location(throw.INNER_RING, throw.NUM_WEDGES)) 
@@ -35,21 +35,38 @@ def ex_strategy_two(num_iterations):
 
 # Q-learning!
 def start_game():
-    global states, actions
-
+    global states, actions, Q
     states = darts.get_states()
     actions = darts.get_actions()
 
-    Q = [[0 for a in actions] for s in states]
+    for s in states:
+        Q[s] = {}
+        for a in range(len(actions)):
+            Q[s][a] = 0
+
+    return throw.location(throw.INNER_RING, throw.NUM_WEDGES)
 
 def get_target(score):
-    to_explore = ex_strategy_one()
-    # to_explore = ex_strategy_two(score)
+    #to_explore = ex_strategy_one()
+    to_explore = ex_strategy_two(score)
 
     if to_explore:
         return random.choice(actions)
     else:
-        return max(Q[score], key = Q[scores].get)
+        action = max_dict(Q, score)
+        return actions[action] if action else random.choice(actions)
 
-def q_learning(s, s_prime, a, r):
-    Q[s][a] += alpha * (r + gamma * (MAXSOMETHINGDEARLORD) - Q[s][a])
+def q_learning(s, s_prime, a):
+    global Q
+
+    r = darts.R(s_prime, a)
+    Q[s][a] += alpha * (r + gamma * max_dict(Q, s_prime) - Q[s][a])
+
+def max_dict(d, s):
+    max_k = 0
+    max_v = 0
+    for k, v in d[s].iteritems():
+        if v >= max_v:
+            max_v = v
+            max_k = k
+    return max_k

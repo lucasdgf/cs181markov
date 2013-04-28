@@ -12,6 +12,7 @@ import modelfree
 
 GAMMA = 0.8
 EPOCH_SIZE = 10
+actions = []
 
 # list of all possible states.
 def get_states():
@@ -20,7 +21,7 @@ def get_states():
 # Returns a list of all possible actions, or targets, which include both a
 # wedge number and a ring.
 def get_actions():
-  actions = []
+  global actions
   for wedge in throw.wedges:
     actions = actions + [throw.location(throw.CENTER, wedge)]
     actions = actions + [throw.location(throw.INNER_RING, wedge)]
@@ -37,6 +38,9 @@ def R(s, a):
 
 # Play a single game 
 def play(method):
+    global actions
+    actions = get_actions()
+
     score = throw.START_SCORE
     turns = 0
     
@@ -57,11 +61,13 @@ def play(method):
         print "Result: wedge", result.wedge,", ring", result.ring
         print "Raw Score:", raw_score
         print "Score:", score
+        prior = score
         if raw_score <= score:
             score = int(score - raw_score)
         else:
             print
             print "TOO HIGH!"
+        modelfree.q_learning(prior, score, get_index(actions, target))                        
         if score == 0:
             break
 
@@ -73,6 +79,12 @@ def play(method):
     print "WOOHOO!  It only took", turns, " turns"
     #end_game(turns)
     return turns
+
+def get_index(l, v):
+  for ind in range(len(l)):
+    if l[ind] == v:
+      return ind
+  return 0
 
 # Play n games and return the average score. 
 def test(n, method):
@@ -124,7 +136,7 @@ def main():
 # code is provided. 
     random.seed()
     throw.init_thrower()
-    test(100, "modelfree")
+    test(1, "modelfree")
 
 if __name__ =="__main__":
     main()
