@@ -18,11 +18,9 @@
 
                 $$\sum_{k \in K} P(\text{k} | \text{t}) \; U(\text{k, S})$$
 
-                Where $K$ is the set of possible points scored after one throw, and $S$ is the current score. To determine the optimal action, we use the maximum expected utility principle:
+                Where $K$ is the set of possible points scored after one throw, and $S$ is the current score. To determine the optimal action, we use the maximum expected utility principle (where T is the set of targets to aim for):
 
                 $$\underset{t \in T}{\operatorname{argmax}} \sum_{k \in K} P(\text{k} | \text{t}) \; U(\text{k, S})$$
-
-                Where T is the set of possible targets we can aim for.
 
                 \item This utility function works fairly well for paring down the score in a relatively small number of dart throws*, but only until it reaches the point where it is possible to win in one throw. At that point, it makes decisions poorly in that it values a non-winning throw as nearly as good as a winning throw. \\
 
@@ -32,9 +30,7 @@
             \end{enumerate}
         \item
             \begin{enumerate}[(a)]
-                \item In our MDP model, the states are the possible scores in the game (so every integer in the range [0, \texttt{START\_SCORE}] is a state), and the actions are the possible areas (ring and wedge) that the dart player can aim for in any given turn. \\
-
-                Therefore \texttt{get\_states()} should return \texttt{range(throw.START\_SCORE + 1)}.
+                \item In our MDP model, the states are the possible scores in the game (so every integer in the range [0, \texttt{START\_SCORE}] is a state), and the actions are the possible areas (ring and wedge) that the dart player can aim for in any given turn. Therefore \texttt{get\_states()} should return \texttt{range(throw.START\_SCORE + 1)}.
                 \item The reward function should not depend on the action $a$ - it should only take into account if the user has won ($s==0$) or not yet.  Thus, we can write the function as \texttt{return 1 if s == 0 else 0}. The problem about this reward function is that it doesn't show our preference of winning earlier than late.\\
                 
                That is why the discount factor is important - we should use it to show that bias for earlier wins. If the discount factor was $1$, then we would still not be able to add that preference (we would still not care if we won early or late), and if the discount factor was $0$, that would mean that we don't care about winning later at all, which is not good, since we will definitely need future actions in order to win eventually. Thus, we should have a discount factor between $0$ and $1$, closer to $0$ in order to show the preference for winning early.
@@ -45,6 +41,7 @@
                 
                 \item The table below shows the program policy for values of $\gamma$ from $0$ to $1$. Each row $k$ for a given $\gamma$ has the value of the area that is aimed at when the score in the game is $k$ and the discount factor is $\gamma$.
                 
+<<<<<<< HEAD
 \begin{center} \begin{tabular}[h]{|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
 \rowcolor{black}
 \textcolor{white}{$\gamma/k$} & \textcolor{white}{$0.0$} & \textcolor{white}{$0.1$} &   \textcolor{white}{$0.2$} &  \textcolor{white}{$0.3$} &  \textcolor{white}{$0.4$} &  \textcolor{white}{$0.5$} &  \textcolor{white}{$0.6$} &  \textcolor{white}{$0.7$} &  \textcolor{white}{$0.8$} &  \textcolor{white}{$0.9$} &  \textcolor{white}{$1.0$}\\ \hline
@@ -64,13 +61,36 @@ From the table, we can firstly see that for $\gamma=0$ the are that is aimed at 
 Secondly, we can see that the strategy for $k=1$ to $6$ or $k=9$ and $\gamma>0$ is to always aim at an area that gives the same score as $k$. The actual wedge and ring targeted actually changes for some $\gamma$ (for $2$, for instance, it changes from wedge $2$, ring $4$ to wedge $1$, ring $5$ for $\gamma\ge0.9$).\\
 
 Finally, we see that for $\gamma=0.9$ or $\gamma=1.0$, we do have a change in strategy,  aiming to $1$ instead of $2$ or $3$. That indicates that since $\gamma$ is getting higher, we care less and less about how long the game lasts, and the program is just aiming on finishing the game instead of finishing it fast.
+=======
+                \begin{center} \begin{tabular}[h]{|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+                $\gamma/k$ & $0.0$ & $0.1$ & $0.2$ & $0.3$ & $0.4$ & $0.5$ & $0.6$ & $0.7$ & $0.8$ & $0.9$ & $1.0$ \\ \hline
+                $1$ & 6 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+                $2$ & 6 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 \\
+                $3$ & 6 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 \\
+                $4$ & 6 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 \\
+                $5$ & 6 & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5 \\
+                $6$ & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 \\
+                $7$ & 6 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 1 & 1 \\
+                $8$ & 6 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 1 & 1 \\
+                $9$ & 6 & 9 & 9 & 9 & 9 & 9 & 9 & 9 & 9 & 9 & 9 \\ \hline
+                \end{tabular} \end{center}
+
+                From the table, we can firstly see that for $\gamma=0$ the are that is aimed at is always the same (area that gives score of $6$). That is not surprising, since a discount factor of zero would mean that we are not looking into the implications of our actions at all, so it doesn't matter what score we currently have, our strategy will always be there same.\\
+
+                Secondly, we can see that the strategy for $k=1$ to $6$ or $k=9$ and $\gamma>0$ is to always aim at an area that gives the same score as $k$. The actual wedge and ring targeted actually changes for some $\gamma$ (for $2$, for instance, it changes from wedge $2$, ring $4$ to wedge $1$, ring $5$ for $\gamma\ge0.9$).\\
+
+                Finally, we see that for $\gamma=0.9$ or $\gamma=1.0$, we do have a change in strategy,  aiming to $1$ instead of $2$ or $3$. That indicates that since $\gamma$ is getting higher, we care less and less about how long the game lasts, and the program is just aiming on finishing the game instead of finishing it fast.
+>>>>>>> 9c31a37369a8d01e64cb4c0ce95c84d9f2220ef4
             \end{enumerate}        
+
+        \newpage
         \item
             \begin{enumerate}[(a)]
                 \item We converge during policy iteration if $\pi_{i+1}(s) = \pi_{i}$ for every state $s$; that is, 
 
                 $$\forall s \; V^{\pi_k}(s) = \underset{a}{\operatorname{argmax}} \sum_{s'} P(s' | s, a) [R(s, a) + \gamma V_j^{\pi_k}(s')]$$
 
+<<<<<<< HEAD
                 Since this satisfies the Bellman equation, we know that it is tha value of optimal stationary policy.
                 \item If $\pi^{(1)}$ is the policy before a policy iteration phase and $\pi^{(1)}$ is the policy after, then by definition: $$\pi^{(2)}(s) = \underset{a}{\operatorname{argmax}} \; Q^{\pi^{(1)}}(s, a)$$
                 
@@ -80,10 +100,21 @@ Finally, we see that for $\gamma=0.9$ or $\gamma=1.0$, we do have a change in st
  If we expand $Q$, however, we will get another expression with $V^{\pi}(s_{t+1})$, and if we keep going, we will get to a point in which we get $V^{\pi^{(2)}}(s)$, which proves that:
  
  $$V^{\pi^{(e)}}(s) \geq V^{\pi^{(1)}}(s)$$  
+=======
+                Since this satisfies the Bellman equation, we know that it is the value of the optimal stationary policy.
+                
+                \item If $\pi^{(1)}$ is the policy before a policy iteration phase and $\pi^{(1)}$ is the policy after, then $$\pi^{(2)}(s) = \underset{a}{\operatorname{argmax}} \; Q^{\pi^{(1)}}(s, a)$$
+
+                Where $$Q^{\pi}(s, a) = $$
+
+                This gives the following inequality with the value function: $$V^{\pi}(s) \leq Q^{\pi} (s, \pi'(s))$$
+
+>>>>>>> 9c31a37369a8d01e64cb4c0ce95c84d9f2220ef4
                 \item Since there are a finite number of states and actions, there are also only a finite number of stationary policies. With every step of policy iteration, we will produce either an unchanged policy or a policy that is a strict improvement over the previous. If the policy is unchanged, then we terminate---producing an optimal policy as proven in part (a). If the policy is a strict improvement, we continue; however, since there are only a finite number of policies, we must eventually reach the optimal one as less-optimal policies are disregarded.
             \end{enumerate}        
         \item
             \begin{enumerate}[(a)]
+<<<<<<< HEAD
                 \item 
                 \begin{enumerate}[1.]
                 	\item
@@ -100,12 +131,19 @@ Finally, we see that for $\gamma=0.9$ or $\gamma=1.0$, we do have a change in st
 			 
 			 While the average number of turns for strategy $1$ seems to be around $25$ to $30$, strategy $2$ has average performances ranging from as low as $26.34$ to as high as $224.16$. It is good to note, however, that the games with ridiculously large number of turns are anomalities caused by the strategy function chosen. Since the exploration probability decreases as the number of iterations increases, we have cases of games that last a long, long time. As an example, for $120$ epochs, we had a game that lasted $3783$ turns, which is far from ideal. That indicates that the strategy is probably not the best to take, since it proves to be very unstable depending on randomness. Besides, the average number of turns over epochs is around $60$ to $70$ epochs, which is far worse than for the simple and faster strategy $1$.\\
                 
+=======
+                \item % TODO: 4a
+
+                Looking at the graphs, the first conclusion we had was that strategy $1$ was definitely better for our program than strategy $2$, the latter actually being very unstable, having a very high variation of average number of tuns. 
+>>>>>>> 9c31a37369a8d01e64cb4c0ce95c84d9f2220ef4
                 \item % TODO: 4b
                 \item % TODO: 4c
             \end{enumerate}                
     \end{enumerate}
+
+\newpage
 \section*{Appendix}
-\subsection*{Code for 2.c}
+\subsection*{Code for 2(c)}
 \begin{verbatim}
 def T(a, s, s_prime):
   # takes an action a, current state s, and next state s_prime

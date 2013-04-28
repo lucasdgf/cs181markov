@@ -20,9 +20,7 @@ def get_states():
 # Returns a list of all possible actions, or targets, which include both a
 # wedge number and a ring.
 def get_actions():
-
   actions = []
-  
   for wedge in throw.wedges:
     actions = actions + [throw.location(throw.CENTER, wedge)]
     actions = actions + [throw.location(throw.INNER_RING, wedge)]
@@ -30,7 +28,6 @@ def get_actions():
     actions = actions + [throw.location(throw.MIDDLE_RING, wedge)]
     actions = actions + [throw.location(throw.SECOND_PATCH, wedge)]
     actions = actions + [throw.location(throw.OUTER_RING, wedge)]
-    
   return actions
 
 def R(s, a):
@@ -127,10 +124,9 @@ def main():
 
 # Plays 1 game using a default player. No modelfree
 # code is provided. 
-    #random.seed()
-    #throw.init_thrower()
-    #test(1, "modelfree")
-
+    random.seed()
+    throw.init_thrower()
+    test(100, "modelfree")
 
 if __name__ =="__main__":
     main()
